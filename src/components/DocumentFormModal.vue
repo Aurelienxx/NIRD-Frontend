@@ -2,7 +2,7 @@
   <div v-show="isOpen" class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>{{ documentToEdit ? 'Modifier le document' : 'Déposer un nouveau document' }}</h2>
+        <h2>{{ documentToEdit ? 'Modifier le document' : 'Déposer un document' }}</h2>
         <button class="close-btn" @click="closeModal">&times;</button>
       </div>
 
@@ -40,7 +40,7 @@
                 :required="!documentToEdit"
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip"
               />
-              <span v-if="form.fileName" class="file-name">{{ form.fileName }}</span>
+              
             </div>
             <p class="file-info">Formats acceptés: PDF, Word, Excel, PowerPoint, TXT, ZIP (Max: 50MB)</p>
           </div>
@@ -48,17 +48,9 @@
           <div class="form-group">
             <label>Tags</label>
             <div class="tags-selector">
-              <label class="tag-checkbox">
-                <input type="checkbox" value="TUTORIEL" v-model="form.tags" />
-                <span>📚 Tutoriel</span>
-              </label>
-              <label class="tag-checkbox">
-                <input type="checkbox" value="GUIDE" v-model="form.tags" />
-                <span>📖 Guide</span>
-              </label>
-              <label class="tag-checkbox">
-                <input type="checkbox" value="LETTRE" v-model="form.tags" />
-                <span>📮 Lettre</span>
+              <label v-for="tag in DOCUMENT_TAGS" :key="tag.value" class="tag-checkbox">
+                <input type="checkbox" :value="tag.value" v-model="form.tags" />
+                <span>{{ tag.emoji }} {{ tag.label }}</span>
               </label>
             </div>
           </div>
@@ -85,6 +77,7 @@
 import { ref, watch } from 'vue';
 import { documentService, type Document, type DocumentTag } from '../services/documentService';
 import { useAuthStore } from '../services/authService';
+import { DOCUMENT_TAGS } from '../config/tags';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -174,7 +167,7 @@ const submitDocument = async () => {
     return;
   }
 
-  if (!documentToEdit && !form.value.fileData) {
+  if (!props.documentToEdit && !form.value.fileData) {
     error.value = 'Veuillez sélectionner un fichier';
     return;
   }
@@ -249,7 +242,7 @@ const submitDocument = async () => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--background-2);
   border-radius: 8px;
   max-width: 500px;
   width: 100%;
@@ -263,21 +256,15 @@ const submitDocument = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #dadce0;
 }
 
-.modal-header h2 {
-  margin: 0;
-  font-size: 18px;
-  color: #202124;
-}
 
 .close-btn {
   background: none;
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #5f6368;
+  color: white;
   transition: color 0.2s ease;
   padding: 0;
   width: 36px;
@@ -288,7 +275,7 @@ const submitDocument = async () => {
 }
 
 .close-btn:hover {
-  color: #202124;
+  color: #5f6368;
 }
 
 .modal-body {
@@ -306,13 +293,6 @@ form {
   flex-direction: column;
 }
 
-.form-group label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #202124;
-  margin-bottom: 8px;
-}
-
 .form-group input[type="text"],
 .form-group textarea {
   padding: 10px 12px;
@@ -321,7 +301,6 @@ form {
   font-size: 14px;
   font-family: inherit;
   transition: border-color 0.2s ease;
-  background: white;
 }
 
 .form-group input:focus,
@@ -382,7 +361,6 @@ form {
   cursor: pointer;
   user-select: none;
   font-size: 14px;
-  color: #202124;
 }
 
 .tag-checkbox input[type="checkbox"] {

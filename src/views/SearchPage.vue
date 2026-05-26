@@ -69,7 +69,7 @@
                 <span class="date">{{ formatDate(doc.createdAt) }}</span>
                 <span v-if="doc.tags.length > 0" class="separator">•</span>
                 <div v-if="doc.tags.length > 0" class="tags">
-                  <span v-for="tag in doc.tags" :key="tag" class="tag">{{ tag }}</span>
+                  <span v-for="tag in doc.tags" :key="tag" class="tag">{{ formatTag(tag) }}</span>
                 </div>
               </div>
             </div>
@@ -94,9 +94,14 @@
       <div v-else class="initial-state">
         <div class="welcome-section">
           <div class="initial-filters">
-            <button class="filter-btn" @click="filterByTag('TUTORIEL')">📚 Tutoriels</button>
-            <button class="filter-btn" @click="filterByTag('GUIDE')">📖 Guides</button>
-            <button class="filter-btn" @click="filterByTag('LETTRE')">📮 Lettres</button>
+            <button
+              v-for="tag in DOCUMENT_TAGS"
+              :key="tag.value"
+              class="filter-btn"
+              @click="filterByTag(tag.value)"
+            >
+              {{ tag.emoji }} {{ tag.label }}
+            </button>
           </div>
         </div>
       </div>
@@ -109,6 +114,7 @@
 import { ref } from 'vue';
 import { documentService, type Document, type DocumentTag } from '../services/documentService';
 import { useAuthStore } from '../services/authService';
+import { DOCUMENT_TAGS, formatTag } from '../config/tags';
 
 const authStore = useAuthStore();
 
@@ -135,6 +141,11 @@ const performSearch = async () => {
     loading.value = false;
   }
 };
+
+const tagOptions = DOCUMENT_TAGS.map(tag => ({
+  label: `${tag.emoji} ${tag.label}`,
+  value: tag.value
+}));
 
 const filterByTag = async (tag: DocumentTag) => {
   try {
