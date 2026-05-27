@@ -314,7 +314,6 @@ const truncateText = (text: string, maxLength: number): string => {
 }
 
 .filters-section {
-  border-bottom: 1px solid #e8e8e8;
   padding: 20px;
   margin: 0;
 }

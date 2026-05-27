@@ -2,12 +2,14 @@
   <div class="container">
     <div class="page-body" v-html="page.layout"></div>
   </div>
+  <CarteVue />
 </template>
 
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { pageService } from '../services/pageService';
+import  CarteVue  from './../components/CarteComponent.vue';
 
 const route = useRoute();
 const page = ref<any>(null);
