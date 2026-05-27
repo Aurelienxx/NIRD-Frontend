@@ -74,8 +74,8 @@ import { ref, onMounted } from 'vue';
 import { articleService } from '../services/articleService';
 import { documentService, type Document } from '../services/documentService';
 import { useAuthStore } from '../services/authService';
-import ArticleFormModal from '../components/ArticleFormModal.vue';
-import DocumentFormModal from '../components/DocumentFormModal.vue';
+import ArticleFormModal from '../components/Modal/ArticleFormModal.vue';
+import DocumentFormModal from '../components/Modal/DocumentFormModal.vue';
 import ArticleListView from './ArticleListView.vue';
 import DocumentListView from './DocumentListView.vue';
 
@@ -188,12 +188,6 @@ onMounted(load);
   flex-wrap: wrap;
 }
 
-.header h2 {
-  margin: 0;
-  font-size: 2rem;
-  color: #333;
-}
-
 .header-actions {
   display: flex;
   gap: 10px;
@@ -250,14 +244,14 @@ onMounted(load);
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  color: #5f6368;
+  color: var(--text-light);
   transition: all 0.2s ease;
   position: relative;
   bottom: -2px;
 }
 
 .tab-btn:hover {
-  color: #202124;
+  color: #5f6368;
 }
 
 .tab-btn.active {

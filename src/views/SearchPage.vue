@@ -23,25 +23,39 @@
       </form>
     </div>
 
-    <div class="filters">
-  <n-select
-    v-model:value="selectedType"
-    :options="typeOptions"
-    placeholder="Type de recherche"
-    class="filter-select"
-  />
-
-  <n-select
-    v-model:value="selectedTags"
-    multiple
-    :options="tagOptions"
-    :fallback-option="fallbackTag"
-    placeholder="Filtrer par tags"
-    class="filter-select"
-  />
-</div>
-
     <div class="page-content">
+      <div v-if="!loading" class="filters-section">
+        <div class="filters-container">
+          <div class="filter-group">
+            <label class="filter-label">Filtrer par tags:</label>
+            <n-select 
+              v-model:value="selectedTags" 
+              :options="tagOptions" 
+              placeholder="Sélectionnez un ou plusieurs tags..."
+              multiple
+              clearable
+              filterable
+              class="tags-select"
+              @update:value="performSearch"
+            />
+          </div>
+          <button 
+            v-if="selectedTags && selectedTags.length > 0" 
+            class="clear-filters-btn"
+            @click="clearFilters"
+          >
+            ✕ Réinitialiser les filtres
+          </button>
+        </div>
+      </div>
+
+      <div v-if="!searchPerformed" class="initial-state">
+        <div class="welcome-section">
+          <h2>Explorer les documents</h2>
+          <p>Recherchez par mots-clés ou filtrez par tags</p>
+        </div>
+      </div>
+      
       <!-- État de chargement -->
       <div v-if="loading" class="loading-state">
         <p>Recherche en cours...</p>
@@ -90,50 +104,61 @@
         <p>Essayez une autre recherche</p>
       </div>
 
-      <!-- État initial -->
-      <div v-else class="initial-state">
-        <div class="welcome-section">
-          <div class="initial-filters">
-            <button
-              v-for="tag in DOCUMENT_TAGS"
-              :key="tag.value"
-              class="filter-btn"
-              @click="filterByTag(tag.value)"
-            >
-              {{ tag.emoji }} {{ tag.label }}
-            </button>
-          </div>
-        </div>
-      </div>
+     
     </div>
   </div>
 </template>
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { NSelect } from 'naive-ui';
 import { documentService, type Document, type DocumentTag } from '../services/documentService';
-import { useAuthStore } from '../services/authService';
 import { DOCUMENT_TAGS, formatTag } from '../config/tags';
-
-const authStore = useAuthStore();
 
 const query = ref('');
 const documents = ref<Document[]>([]);
 const loading = ref(false);
 const searchPerformed = ref(false);
+const selectedTags = ref<string[]>([]);
+
+
+const tagOptions = DOCUMENT_TAGS.map(tag => ({
+  label: `${tag.emoji} ${tag.label}`,
+  value: tag.value
+}));
 
 const performSearch = async () => {
-  if (!query.value.trim()) {
-    documents.value = [];
-    searchPerformed.value = false;
-    return;
-  }
-
   try {
     loading.value = true;
     searchPerformed.value = true;
-    documents.value = await documentService.searchDocuments(query.value.trim());
+
+    let results: Document[] = [];
+
+    if (query.value.trim()) {
+      results = await documentService.searchDocuments(query.value.trim());
+    }
+
+    if (selectedTags.value && selectedTags.value.length > 0) {
+      const tagResults: Document[] = [];
+      
+      for (const tag of selectedTags.value) {
+        const docsForTag = await documentService.getDocumentsByTag(tag);
+        tagResults.push(...docsForTag);
+      }
+
+      if (results.length > 0) {
+        // Intersection: keep only documents that match both search and tags
+        const tagIds = new Set(tagResults.map(t => t.id));
+        results = results.filter(doc => tagIds.has(doc.id));
+      } else {
+        // Si pas de recherche textuelle, retourner les documents des tags sélectionnés
+        results = [...new Map(tagResults.map(item => [item.id, item])).values()];
+      }
+    }
+
+    documents.value = results;
+
   } catch (error) {
     console.error('Erreur lors de la recherche:', error);
     documents.value = [];
@@ -142,10 +167,12 @@ const performSearch = async () => {
   }
 };
 
-const tagOptions = DOCUMENT_TAGS.map(tag => ({
-  label: `${tag.emoji} ${tag.label}`,
-  value: tag.value
-}));
+const clearFilters = () => {
+  selectedTags.value = [];
+  query.value = '';
+  documents.value = [];
+  searchPerformed.value = false;
+};
 
 const filterByTag = async (tag: DocumentTag) => {
   try {
@@ -161,21 +188,22 @@ const filterByTag = async (tag: DocumentTag) => {
 };
 
 const selectDocument = (doc: Document) => {
-  // Ouvrir le document ou afficher les détails
   console.log('Document sélectionné:', doc);
 };
 
 const downloadDocument = async (doc: Document) => {
   try {
     const blob = await documentService.downloadDocument(doc.id);
-    // Créer un lien de téléchargement
     const url = window.URL.createObjectURL(blob);
+
     const link = document.createElement('a');
     link.href = url;
     link.download = doc.fileName;
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Erreur lors du téléchargement:', error);
@@ -193,7 +221,9 @@ const formatDate = (dateString: string): string => {
 };
 
 const truncateText = (text: string, maxLength: number): string => {
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  return text.length > maxLength
+    ? text.substring(0, maxLength) + '...'
+    : text;
 };
 </script>
 
@@ -279,27 +309,54 @@ const truncateText = (text: string, maxLength: number): string => {
   padding: 30px 20px;
 }
 
-.initial-filters {
+.welcome-section {
+  margin-bottom: 20px;
+}
+
+.filters-section {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 20px;
+  margin: 0;
+}
+
+.filters-container {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  align-items: flex-end;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
-.filter-btn {
-  padding: 12px 24px;
-  background: white;
-  border: 1px solid #dadce0;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #202124;
-  transition: all 0.2s ease;
+.filter-group {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.filter-btn:hover {
+
+
+.tags-select {
+  min-width: 250px;
+}
+
+.clear-filters-btn {
+  padding: 8px 16px;
   background: #f1f3f4;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #5f6368;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-filters-btn:hover {
+  background: #dadce0;
+  color: #202124;
 }
 
 .loading-state {
@@ -421,16 +478,6 @@ const truncateText = (text: string, maxLength: number): string => {
   opacity: 0.5;
 }
 
-.empty-state h3 {
-  font-size: 20px;
-  color: #202124;
-  margin-bottom: 8px;
-}
-
-.empty-state p {
-  color: var(--text-light);
-  margin: 0;
-}
 
 @keyframes fadeIn {
   from {

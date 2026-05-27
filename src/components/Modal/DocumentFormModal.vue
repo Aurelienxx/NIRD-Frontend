@@ -75,9 +75,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { documentService, type Document, type DocumentTag } from '../services/documentService';
-import { useAuthStore } from '../services/authService';
-import { DOCUMENT_TAGS } from '../config/tags';
+import { documentService, type Document, type DocumentTag } from '../../services/documentService';
+import { useAuthStore } from '../../services/authService';
+import { DOCUMENT_TAGS } from '../../config/tags';
 
 const props = defineProps<{
   isOpen: boolean;

@@ -67,8 +67,8 @@
 import { onMounted, ref, computed } from 'vue'
 import { useAuthStore } from '../services/authService'
 import { articleService, type Article } from '../services/articleService'
-import ArticleFormModal from '../components/ArticleFormModal.vue'
-import ArticleDetailModal from '../components/ArticleDetailModal.vue'
+import ArticleFormModal from '../components/Modal/ArticleFormModal.vue'
+import ArticleDetailModal from '../components/Modal/ArticleDetailModal.vue'
 
 const authStore = useAuthStore()
 

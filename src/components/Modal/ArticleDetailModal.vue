@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Article } from '../services/articleService'
+import type { Article } from '../../services/articleService'
 
 const props = defineProps<{
   isOpen: boolean

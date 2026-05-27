@@ -6,11 +6,17 @@ import UserProfile from '../views/UserProfile.vue'
 import UserArticlePage from '../views/UserArticlePage.vue'
 import Search from '../views/SearchPage.vue'
 import Actualite from '../views/ActuPage.vue'
+import Home from '../views/Home.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: '/accueil'
+  },
+  {
+    path: '/accueil',
+    name: 'Home',
+    component: Home
   },
   {
     path: '/auth',

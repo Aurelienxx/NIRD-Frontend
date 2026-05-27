@@ -85,9 +85,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { articleService, type Article } from '../services/articleService';
-import { useAuthStore } from '../services/authService';
-import RichTextEditor from './Admin/RichTextEditor.vue';
+import { articleService, type Article } from '../../services/articleService.ts';
+import { useAuthStore } from '../../services/authService.ts';
+import RichTextEditor from './../Admin/RichTextEditor.vue';
 
 const props = defineProps<{
   isOpen: boolean;
