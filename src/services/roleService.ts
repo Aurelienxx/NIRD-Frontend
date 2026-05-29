@@ -18,6 +18,17 @@ export const roleService = {
     }
   },
 
+  // Récupérer les rôles disponibles pour l'inscription
+  async getSignupRoles(): Promise<Role[]> {
+    try {
+      const response = await apiClient.get('/roles/signup');
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des rôles pour l\'inscription:', error);
+      throw error;
+    }
+  },
+
   // Récupérer un rôle par ID
   async getById(id: number): Promise<Role> {
     try {

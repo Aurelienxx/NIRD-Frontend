@@ -17,7 +17,8 @@ export interface SignupData {
   email: string;
   password: string;
   name?: string;
-  roles?: string[];
+  roleId?: number;
+  placeId?: number;
 }
 
 export const userService = {
@@ -47,6 +48,7 @@ export const userService = {
   async create(data: SignupData): Promise<User> {
     try {
       const response = await apiClient.post('/users', data);
+      console.log('Utilisateur créé avec succès:', response.data);
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 400) {

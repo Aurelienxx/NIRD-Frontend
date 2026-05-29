@@ -1,116 +1,333 @@
 <template>
   <div class="auth-container">
     <div class="auth-card">
-      <div class="auth-toggle">
-        <button :class="['toggle-btn', { active: isLogin }]" @click="isLogin = true">Connexion</button>
-        <button :class="['toggle-btn', { active: !isLogin }]" @click="isLogin = false">Inscription</button>
+
+      <div v-if="auth.errorMessage" class="message error-message">
+        {{ auth.errorMessage }}
       </div>
 
-      <!-- Messages via le Store -->
-      <div v-if="auth.errorMessage" class="message error-message">{{ auth.errorMessage }}</div>
-      <div v-if="auth.successMessage" class="message success-message">{{ auth.successMessage }}</div>
+      <div v-if="auth.successMessage" class="message success-message">
+        {{ auth.successMessage }}
+      </div>
 
-      <transition name="slide">
-        <!-- FORMULAIRE DE CONNEXION -->
-        <form v-if="isLogin" @submit.prevent="handleLogin" class="auth-form">
-          <h2>Connexion</h2>
-          <div class="form-group">
-            <label>Email</label>
-            <input v-model="loginForm.email" type="email" required />
-          </div>
-          <div class="form-group">
-            <label>Mot de passe</label>
-            <input v-model="loginForm.password" type="password" required />
-          </div>
-          <button type="submit" class="btn btn-primary" :disabled="auth.loading">
-            {{ auth.loading ? 'Connexion...' : 'Se connecter' }}
-          </button>
-        </form>
+      <n-tabs v-model:value="tab" type="segment">
 
-        <!-- FORMULAIRE D'INSCRIPTION -->
-        <form v-else @submit.prevent="handleSignup" class="auth-form">
-          <h2>Inscription</h2>
-          <div class="form-group">
-            <label>Nom complet</label>
-            <input v-model="signupForm.name" type="text" required />
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input v-model="signupForm.email" type="email" required />
-          </div>
-          <div class="form-group">
-            <label>Mot de passe</label>
-            <input v-model="signupForm.password" type="password" required />
-          </div>
+        <!-- CONNEXION -->
+        <n-tab-pane name="login" tab="Connexion">
 
-          <div class="form-group">
-            <label>Sélectionner votre rôle (optionnel)</label>
-            <select v-model="signupForm.role">
-              <option value="">-- Rôle par défaut (Membre) --</option>
-              <option v-for="role in selectableRoles" :key="role.id" :value="role.name">
-                {{ role.name }}
-              </option>
-            </select>
-            <p v-if="availableRoles.length === 0" class="loading-text">Chargement des rôles...</p>
-          </div>
+          <form @submit.prevent="handleLogin" class="auth-form">
 
-          <button type="submit" class="btn btn-primary" :disabled="auth.loading">
-            S'inscrire
-          </button>
-        </form>
-      </transition>
+            <h2>Connexion</h2>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                v-model="loginForm.email"
+                type="email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Mot de passe</label>
+              <input
+                v-model="loginForm.password"
+                type="password"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              :disabled="auth.loading"
+            >
+              Connexion
+            </button>
+
+          </form>
+
+        </n-tab-pane>
+
+        <!-- INSCRIPTION -->
+        <n-tab-pane name="signup" tab="Inscription">
+
+          <form @submit.prevent="handleSignup" class="auth-form">
+
+            <h2>Inscription</h2>
+
+            <div class="form-group">
+              <label>Nom</label>
+              <input
+                v-model="signupForm.name"
+                type="text"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                v-model="signupForm.email"
+                type="email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Mot de passe</label>
+              <input
+                v-model="signupForm.password"
+                type="password"
+                required
+              />
+            </div>
+
+            <!-- SELECT ROLE -->
+            <div class="form-group">
+
+              <label>Rôle</label>
+
+              <n-select
+                v-model:value="selectedRoleId"
+                :options="roleOptions"
+                placeholder="Choisir un rôle"
+              />
+            </div>
+
+            <!-- SELECT LOCALITE -->
+            <div class="form-group">
+
+              <label>Localité</label>
+
+              <n-select
+                v-model:value="selectedPlaceId"
+                :options="placeOptions"
+                placeholder="Choisir une localité"
+              />
+              <div class="add-place-link">
+                <span @click="addPlaceId = !addPlaceId">
+                  Ajouter une nouvelle localité
+                </span>
+              </div>
+
+            </div>
+
+            <!-- AJOUT LOCALITE -->
+            <div class="create-place" v-if="addPlaceId">
+
+              <h3>Ajouter une localité</h3>
+
+              <div class="form-group">
+                <label>Nom du lieu</label>
+
+                <input
+                  v-model="newPlace.name"
+                  type="text"
+                  placeholder="Ex: IUT de Calais"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Adresse</label>
+
+                <input
+                  v-model="newPlace.address"
+                  type="text"
+                  placeholder="Ex: 19 Rue Louis David, 62100 Calais"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Description</label>
+                  <textarea
+                    id="description"
+                    v-model="newPlace.description"
+                    placeholder="Ex: L'IUT de Calais est un établissement d'enseignement supérieur situé à Calais, en France. Il propose des formations dans l'informatique, l'administration etc."
+                    rows="3"
+                  ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Type</label>
+
+                <input
+                  v-model="newPlace.type"
+                  type="text"
+                  placeholder="Ex: Établissement d'enseignement supérieur"
+                />
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-secondary"
+                @click="createPlace"
+              >
+                Ajouter cette localité
+              </button>
+
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              :disabled="auth.loading || !selectedPlaceId"
+            >
+              S'inscrire
+            </button>
+
+          </form>
+
+        </n-tab-pane>
+
+      </n-tabs>
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useAuthStore } from '../services/authService';
-import { useRouter } from 'vue-router';
-import { roleService } from '../services/roleService';
+import { ref, onMounted } from 'vue'
+import { NTabs, NTabPane, NSelect } from 'naive-ui'
+import { useAuthStore } from '../services/authService'
+import { placeService } from '../services/placeService'
+import { roleService } from '../services/roleService'
+import { useRouter } from 'vue-router'
+import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
-const auth = useAuthStore();
-const router = useRouter();
-const isLogin = ref(true);
-const availableRoles = ref<any[]>([]);
+const auth = useAuthStore()
+const router = useRouter()
 
-const selectableRoles = computed(() => {
-  return availableRoles.value.filter(role => 
-    role.name !== 'MEMBRE' && role.name !== 'ADMIN'
-  );
-});
+const addPlaceId = ref(false)
 
-const loginForm = ref({ email: '', password: '' });
-const signupForm = ref({ name: '', email: '', password: '', role: '' });
+const tab = ref('login')
+
+const loginForm = ref({
+  email: '',
+  password: ''
+})
+
+const signupForm = ref({
+  name: '',
+  email: '',
+  password: ''
+})
+
+const newPlace = ref({
+  name: '',
+  description: '',
+  address: '',
+  type: ''
+})
+
+const selectedPlaceId = ref(null)
+const selectedRoleId = ref(null)
+
+const places = ref([])
+const placeOptions = ref([])
+
+const roles = ref([])
+const roleOptions = ref([])
+
+const provider = new OpenStreetMapProvider()
+
+
 
 onMounted(async () => {
-  try {
-    availableRoles.value = await roleService.getAll();
-  } catch (error) {
-    console.error('Erreur lors de la récupération des rôles:', error);
-  }
-});
+  places.value = await placeService.getAllLocations()
+
+  placeOptions.value = places.value.map(p => ({
+    label: p.name + ' - ' + p.address,
+    value: p.id
+  }))
+
+  roles.value = await roleService.getSignupRoles()
+
+  roleOptions.value = roles.value.map(r => ({
+    label: r.name,
+    value: r.id
+  }))
+})
 
 const handleLogin = async () => {
-  const success = await auth.login(loginForm.value);
-  if (success) {
-    setTimeout(() => router.push('/'), 1500);
+  const ok = await auth.login(loginForm.value)
+
+  if (ok) {
+    setTimeout(() => router.push('/'), 800)
   }
-};
+}
 
 const handleSignup = async () => {
-  const success = await auth.signup(signupForm.value);
-  if (success) {
-    isLogin.value = true;
-    signupForm.value = { name: '', email: '', password: '', role: '' };
-  }
-};
-</script>
+  const ok = await auth.signup({
+    name: signupForm.value.name,
+    email: signupForm.value.email,
+    password: signupForm.value.password,
+    roleId: selectedRoleId.value,
+    placeId: selectedPlaceId.value
+  })
 
+  if (ok) {
+    tab.value = 'login'
+
+    signupForm.value = {
+      name: '',
+      email: '',
+      password: ''
+    }
+
+    selectedPlaceId.value = null
+    selectedRoleId.value = null
+
+    setTimeout(() => router.push('/'), 800)
+  }
+}
+
+const createPlace = async () => {
+  try {
+
+  const results = await provider.search({
+    query: newPlace.value.address
+  })
+
+  if (results.length === 0) {
+    auth.errorMessage = 'Adresse introuvable'
+    return
+  }
+
+  const result = results[0]
+
+  const createdPlace = await placeService.createPlace({
+    name: newPlace.value.name,
+    address: newPlace.value.address,
+    description: newPlace.value.description ?? '',
+    type: newPlace.value.type,
+    latitude: result.y,
+    longitude: result.x,
+  })
+
+  places.value.push(createdPlace)
+
+  placeOptions.value.push({
+    label: createdPlace.name + ' - ' + createdPlace.address,
+    value: createdPlace.id
+  })
+
+  selectedPlaceId.value = createdPlace.id
+
+  newPlace.value = {
+  name: '',
+  description: '',
+  address: '',
+  type: ''
+}
+
+  } catch (e) {
+  console.error(e)
+  }
+}
+
+</script>
 <style scoped>
-/* ============================================
-   UNIQUE STYLES - Auth Page
-   ============================================ */
 .auth-container {
   display: flex;
   justify-content: center;
@@ -122,150 +339,93 @@ const handleSignup = async () => {
 
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 500px;
   background: var(--background-2);
   border-radius: 12px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-}
-
-.auth-toggle {
-  display: flex;
-  background: var(--background-3);
-}
-
-.toggle-btn {
-  flex: 1;
-  padding: 1rem;
-  border: none;
-  background: transparent;
-  color: var(--text-light);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.toggle-btn:hover {
-  color: var(--text-white);
-}
-
-.toggle-btn.active {
-  color: var(--lk-1);
-}
-
-.toggle-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--lk-1), var(--lk-2));
-  border-radius: 2px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .auth-form {
-  padding: 2.5rem 2rem;
-  animation: fadeIn 0.3s ease;
-}
-
-.auth-form h2 {
-  margin: 0 0 2rem 0;
-  font-size: 1.8rem;
-  color: var(--text-white);
-  border-bottom: none;
-}
-
-.auth-form h2::after {
-  display: none;
+  padding: 2rem;
 }
 
 .message {
   margin: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  font-weight: 500;
-  animation: slideDown 0.3s ease;
 }
 
 .error-message {
   background-color: rgba(255, 59, 48, 0.1);
   color: #ff3b30;
-  border-left: 4px solid #ff3b30;
 }
 
 .success-message {
   background-color: rgba(52, 211, 153, 0.1);
   color: #34d399;
-  border-left: 4px solid #34d399;
 }
 
-.forgot-password {
-  display: inline-block;
-  margin-top: 1rem;
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.add-place-link {
+  margin-top: 0.5rem;
+}
+
+.add-place-link span {
   color: var(--lk-1);
-  text-decoration: none;
+  cursor: pointer;
   font-size: 0.9rem;
-  transition: color 0.3s ease;
-}
-
-.forgot-password:hover {
-  color: var(--lk-2);
   text-decoration: underline;
 }
 
-/* Transitions spécifiques */
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
+.add-place-link span:hover {
+  color: var(--lk-2);
 }
 
-.slide-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
+:deep(.n-tabs-rail) {
+background: var(--background-1);
 }
 
-.slide-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
+:deep(.n-tabs) { 
+  color: var(--text-light); 
+} 
 
-.form-group select option {
-  background: var(--background-2);
-  color: var(--text-white);
-  padding: 0.5rem;
-}
+:deep(.n-tabs-nav) { 
+  background: var(--background-1); 
+  border-bottom: none; 
+} 
 
-.loading-text {
-  color: var(--text-light);
-  font-size: 0.9rem;
-  margin: 0.5rem 0 0 0;
-  text-align: center;
-}
+:deep(.n-tabs-tab) { 
+  color: var(--text-light); 
+  transition: all 0.2s ease; 
+} 
 
-/* Responsive */
-@media (max-width: 640px) {
-  .auth-container {
-    padding: 1rem;
-  }
+:deep(.n-tabs-tab:hover) { 
+  border-bottom: 2px solid #1f73e7; 
+  color: var(--text-light); 
+} 
 
-  .auth-card {
-    max-width: 100%;
-  }
+:deep(.n-tabs-tab--active) { 
+  background: var(--background-2); 
+  color: var(--text-light); 
+  border-bottom: 2px solid #1f73e7; 
+} 
 
-  .auth-form {
-    padding: 1.5rem;
-  }
-
-  .auth-form h2 {
-    font-size: 1.5rem;
-  }
-
-  .toggle-btn {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-  }
-}
 </style>

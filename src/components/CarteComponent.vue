@@ -21,12 +21,6 @@
               <strong>Adresse :</strong><br>
               {{ place.address }}
             </p>
-
-            <p class="place-location">
-              <strong>Lieu :</strong>
-              {{ place.location }}
-            </p>
-
             <p class="coords">
               {{ place.latitude }},
               {{ place.longitude }}
@@ -51,7 +45,6 @@ interface Place {
   id: number
   name: string
   address: string
-  location: string
   type: string
 
   latitude?: number
