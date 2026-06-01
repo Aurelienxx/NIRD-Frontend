@@ -1,36 +1,95 @@
 <template>
   <div class="map-container">
+
     <div class="sidebar">
-      <h2 class="sidebar-title">Nos acteurs</h2>
 
-      <div class="places-list">
-        <div
-          v-for="place in places"
-          :key="place.id"
-          class="place-card"
-          :class="{ active: selectedPlace?.id === place.id }"
-          @click="selectPlace(place)"
-        >
-          <div class="place-header">
-            <h3 class="place-name">{{ place.name }}</h3>
-            <span class="place-type">{{ place.type }}</span>
-          </div>
+      <h2 class="sidebar-title">
+        Détails du lieu
+      </h2>
 
-          <div class="place-info">
-            <p class="place-address">
-              <strong>Adresse :</strong><br>
-              {{ place.address }}
-            </p>
-            <p class="coords">
-              {{ place.latitude }},
-              {{ place.longitude }}
-            </p>
-          </div>
+      <div v-if="selectedPlace" class="place-card">
+
+        <div class="place-header">
+
+          <h3 class="place-name">
+            {{ selectedPlace.name }}
+          </h3>
+
+          <span class="place-type">
+            {{ selectedPlace.type }}
+          </span>
+
         </div>
+
+        <div class="place-info">
+
+          <p class="place-address">
+            <strong>Adresse :</strong><br>
+            {{ selectedPlace.address }}
+          </p>
+
+          <p class="coords">
+            {{ selectedPlace.latitude }},
+            {{ selectedPlace.longitude }}
+          </p>
+
+        </div>
+
+        <div class="users-section">
+
+          <h3>Utilisateurs liés</h3>
+
+          <div
+            v-if="selectedPlace.users.length > 0"
+            class="users-list"
+          >
+
+            <div
+              v-for="user in selectedPlace.users"
+              :key="user.id"
+              class="user-card"
+            >
+
+              <div class="user-name">
+                {{ user.name }}
+              </div>
+
+              <div class="user-email">
+                {{ user.email }}
+              </div>
+
+              <div class="roles">
+
+                <span
+                  v-for="role in user.roles"
+                  :key="role.id"
+                  class="role-badge"
+                >
+                  {{ role.name }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <p v-else>
+            Aucun utilisateur lié
+          </p>
+
+        </div>
+
       </div>
+
+      <div v-else>
+        Clique sur un marker de la carte
+      </div>
+
     </div>
 
     <div id="map" class="map"></div>
+
   </div>
 </template>
 
@@ -38,76 +97,69 @@
 import { ref, onMounted } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
+import { placeService } from '../services/placeService'
+
+const markers: Map<number, L.Marker> = new Map()
+const provider = new OpenStreetMapProvider()
 
 interface Place {
   id: number
   name: string
   address: string
   type: string
+  latitude: number
+  longitude: number
 
-  latitude?: number
-  longitude?: number
+  users: {
+    id: number
+    name: string
+    email: string
+
+    roles: {
+      id: number
+      name: string
+    }[]
+  }[]
 }
 
-const places = ref<Place[]>([
-  {
-    id: 1,
-    name: 'Cité Scolaire Camille Claudel',
-    address: 'Fourmies, France',
-    location: 'Fourmies',
-    type: 'Cité scolaire'
-  },
-  {
-    id: 2,
-    name: 'Cité scolaire Bellevue',
-    address: 'Albi, France',
-    location: 'Albi',
-    type: 'Cité scolaire'
-  },
-  {
-    id: 3,
-    name: 'Collège Coat Mez',
-    address: 'Daoulas, France',
-    location: 'Daoulas',
-    type: 'Collège'
-  },
-  {
-    id: 4,
-    name: 'Collège F.R. Chateaubriand',
-    address: 'Combourg, France',
-    location: 'Combourg',
-    type: 'Collège'
-  },
-  {
-    id: 5,
-    name: 'Collège Les Cuvelles',
-    address: 'Vaucouleurs, France',
-    location: 'Vaucouleurs',
-    type: 'Collège'
-  },
-  {
-    id: 6,
-    name: 'Collège Paul Drouot',
-    address: 'Vouziers, France',
-    location: 'Vouziers',
-    type: 'Collège'
-  },
-  {
-    id: 7,
-    name: 'Collège Simone Signoret',
-    address: 'Bruay-la-Buissière, France',
-    location: 'Bruay-la-Buissière',
-    type: 'Collège'
-  },
-])
-
+const places = ref([])
 const selectedPlace = ref<Place | null>(null)
 
-const markers: Map<number, L.Marker> = new Map()
+onMounted(async () => {
+  places.value = await placeService.getAllPlaces()
 
-const provider = new OpenStreetMapProvider()
+  const map = L.map('map').setView([46.603354, 1.888334], 6)
+
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      attribution: 'OpenStreetMap'
+    }
+  ).addTo(map)
+
+  for (const place of places.value) {
+
+    const marker = L.marker([
+      Number(place.latitude),
+      Number(place.longitude)
+    ]).addTo(map)
+
+    marker.bindPopup(`
+      <div class="popup-content">
+        <strong>${place.name}</strong><br>
+        <small>${place.type}</small><br>
+        ${place.address}
+      </div>
+    `)
+
+    markers.set(place.id, marker)
+
+    marker.on('click', () => {
+      selectPlace(place)
+    })
+  }
+})
 
 const selectPlace = (place: Place) => {
   selectedPlace.value = place
@@ -161,61 +213,7 @@ const saveCoordinates = async (place: Place) => {
   }
 }
 
-onMounted(async () => {
-  const map = L.map('map').setView([50.9513, 1.8587], 13)
 
-  L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-      attribution: 'OpenStreetMap'
-    }
-  ).addTo(map)
-
-  for (const place of places.value) {
-
-    /*
-      Si coordonnées absentes :
-      géocodage + sauvegarde base
-    */
-
-    if (
-      place.latitude === undefined ||
-      place.longitude === undefined
-    ) {
-      await geocodeAddress(place)
-    }
-
-    /*
-      Sécurité
-    */
-
-    if (
-      place.latitude === undefined ||
-      place.longitude === undefined
-    ) {
-      continue
-    }
-
-    const marker = L.marker([
-      place.latitude,
-      place.longitude
-    ]).addTo(map)
-
-    marker.bindPopup(`
-      <div class="popup-content">
-        <strong>${place.name}</strong><br>
-        <small>${place.type}</small><br>
-        ${place.address}
-      </div>
-    `)
-
-    markers.set(place.id, marker)
-
-    marker.on('click', () => {
-      selectPlace(place)
-    })
-  }
-})
 </script>
 
 <style scoped>
@@ -296,16 +294,45 @@ onMounted(async () => {
   min-width: 200px;
 }
 
-@media (max-width: 768px) {
-  .map-container {
-    flex-direction: column;
-  }
+.users-section {
+  margin-top: 20px;
+}
 
-  .sidebar {
-    width: 100%;
-    height: 300px;
-    border-right: none;
-    border-bottom: 1px solid #e0e0e0;
-  }
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-card {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--background-2);
+  border: 1px solid #2f2f2f;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.user-email {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #999;
+}
+
+.roles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.role-badge {
+  background: #1f73e7;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
 }
 </style>

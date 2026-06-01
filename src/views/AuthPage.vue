@@ -17,8 +17,6 @@
 
           <form @submit.prevent="handleLogin" class="auth-form">
 
-            <h2>Connexion</h2>
-
             <div class="form-group">
               <label>Email</label>
               <input
@@ -53,8 +51,6 @@
         <n-tab-pane name="signup" tab="Inscription">
 
           <form @submit.prevent="handleSignup" class="auth-form">
-
-            <h2>Inscription</h2>
 
             <div class="form-group">
               <label>Nom</label>

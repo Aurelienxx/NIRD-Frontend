@@ -1,10 +1,22 @@
 import apiClient from './apiClient';
 
+export interface Place {
+  id: number;
+  name: string;
+  description?: string;
+  address: string;
+  type: string;
+  latitude: number;
+  longitude: number;
+}
+
 export interface User {
   id: number;
   email: string;
   name?: string;
   roles?: Array<{ id: number; name: string }>;
+  placeId?: number;
+  place?: Place;
   createdAt?: string;
 }
 

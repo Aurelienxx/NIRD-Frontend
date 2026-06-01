@@ -33,10 +33,12 @@ export const useAuthStore = defineStore('auth', () => {
     errorMessage.value = '';
     try {
       const response = await userService.login(credentials);
+      console.log('Login réussi:', response);
       
       token.value = response.token;
       user.value = response.user;
       roles.value = response.user.roles || [];
+      ;
       
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('authUser', JSON.stringify(response.user));
