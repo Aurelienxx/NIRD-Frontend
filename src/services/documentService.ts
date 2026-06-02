@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 
-export type DocumentTag = 'TUTORIEL' | 'GUIDE' | 'LETTRE';
+export type DocumentTag = 'TUTORIEL' | 'GUIDE' | 'LETTRE' | 'RAPPORT';
 
 export interface Document {
   id: number;

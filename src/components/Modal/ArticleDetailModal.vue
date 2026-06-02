@@ -37,7 +37,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Article } from '../../services/articleService'
 
 const props = defineProps<{

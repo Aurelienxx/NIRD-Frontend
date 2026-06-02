@@ -216,14 +216,14 @@ const newPlace = ref({
   type: ''
 })
 
-const selectedPlaceId = ref(null)
-const selectedRoleId = ref(null)
+const selectedPlaceId = ref<number | null>(null)
+const selectedRoleId = ref<number | null>(null)
 
-const places = ref([])
-const placeOptions = ref([])
+const places = ref<any[]>([])
+const roles = ref<any[]>([])
 
-const roles = ref([])
-const roleOptions = ref([])
+const placeOptions = ref<{ label: string; value: number }[]>([])
+const roleOptions = ref<{ label: string; value: number }[]>([])
 
 const provider = new OpenStreetMapProvider()
 

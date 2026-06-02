@@ -9,6 +9,16 @@ export interface Place {
   latitude: number
   longitude: number
   createdAt: string
+
+  users: {
+    id: number
+    name: string
+    email: string
+    roles: {
+      id: number
+      name: string
+    }[]
+  }[]
 }
 
 export const placeService = {

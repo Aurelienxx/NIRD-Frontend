@@ -111,21 +111,22 @@
 
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { NSelect } from 'naive-ui';
-import { documentService, type Document, type DocumentTag } from '../services/documentService';
+import { documentService, type Document } from '../services/documentService';
 import { DOCUMENT_TAGS, formatTag } from '../config/tags';
+import type { DocumentTag } from '../services/documentService';
 
 const query = ref('');
 const documents = ref<Document[]>([]);
 const loading = ref(false);
 const searchPerformed = ref(false);
-const selectedTags = ref<string[]>([]);
+const selectedTags = ref<DocumentTag[]>([]);
 
 
 const tagOptions = DOCUMENT_TAGS.map(tag => ({
   label: `${tag.emoji} ${tag.label}`,
-  value: tag.value
+  value: tag.value as DocumentTag
 }));
 
 const performSearch = async () => {
@@ -174,18 +175,6 @@ const clearFilters = () => {
   searchPerformed.value = false;
 };
 
-const filterByTag = async (tag: DocumentTag) => {
-  try {
-    loading.value = true;
-    searchPerformed.value = true;
-    documents.value = await documentService.getDocumentsByTag(tag);
-  } catch (error) {
-    console.error('Erreur lors du filtre par tag:', error);
-    documents.value = [];
-  } finally {
-    loading.value = false;
-  }
-};
 
 const selectDocument = (doc: Document) => {
   console.log('Document sélectionné:', doc);

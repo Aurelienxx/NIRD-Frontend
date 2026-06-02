@@ -28,11 +28,6 @@
               <span v-else class="not-assigned">Aucune localité assignée</span>
             </div>
 
-            <div class="info-group" v-if="userPlace">
-              <label>Type :</label>
-              <span>{{ userPlace.type }}</span>
-            </div>
-
             <div class="info-group" v-if="userPlace && userPlace.description">
               <label>Description :</label>
               <span>{{ userPlace.description }}</span>
@@ -395,8 +390,6 @@ const handleLogout = () => {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  border-top: 1px solid var(--background-3);
-  padding-top: 1.5rem;
 }
 
 /* Buttons */

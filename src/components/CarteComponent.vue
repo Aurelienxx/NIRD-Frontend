@@ -97,11 +97,9 @@
 import { ref, onMounted } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import { placeService } from '../services/placeService'
 
 const markers: Map<number, L.Marker> = new Map()
-const provider = new OpenStreetMapProvider()
 
 interface Place {
   id: number
@@ -115,7 +113,6 @@ interface Place {
     id: number
     name: string
     email: string
-
     roles: {
       id: number
       name: string
@@ -123,7 +120,7 @@ interface Place {
   }[]
 }
 
-const places = ref([])
+const places = ref<Place[]>([])
 const selectedPlace = ref<Place | null>(null)
 
 onMounted(async () => {
@@ -168,48 +165,6 @@ const selectPlace = (place: Place) => {
 
   if (marker) {
     marker.openPopup()
-  }
-}
-
-const geocodeAddress = async (place: Place) => {
-  try {
-    const results = await provider.search({
-      query: place.address
-    })
-
-    if (results.length > 0) {
-      place.latitude = results[0].y
-      place.longitude = results[0].x
-
-      /*
-        Ici tu sauvegardes en base
-      */
-
-      await saveCoordinates(place)
-    }
-  } catch (error) {
-    console.error('Erreur géocodage :', error)
-  }
-}
-
-const saveCoordinates = async (place: Place) => {
-  try {
-    /*
-      Exemple API backend
-    */
-
-    await fetch(`http://localhost:8080/places/${place.id}/coords`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        latitude: place.latitude,
-        longitude: place.longitude
-      })
-    })
-  } catch (error) {
-    console.error('Erreur sauvegarde coordonnées :', error)
   }
 }
 

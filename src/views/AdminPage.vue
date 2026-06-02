@@ -1,114 +1,54 @@
 <template>
-  <div class="admin-dashboard">
-    <div class="nav-tabs">
-      <button 
-        v-for="tab in tabs" 
-        :key="tab"
-        :class="['tab-btn', { active: activeTab === tab }]"
-        @click="activeTab = tab"
-      >
-        {{ tabLabels[tab] }}
-      </button>
-    </div>
+  <n-card class="admin-dashboard">
+    <template #header>
+      <div>
+        <h1>Tableau de bord Administrateur</h1>
+      </div>
+    </template>
 
-    <!-- Onglet Rôles -->
-    <div v-if="activeTab === 'roles'" class="tab-content">
-      <RoleManager />
-    </div>
+    <n-tabs 
+      v-model:value="activeTab" 
+      type="card" 
+      animated 
+      tab-style="min-width: 150px"
+    >
+      <n-tab-pane name="roles" tab="Rôles">
+        <RoleManager />
+      </n-tab-pane>
 
-    <!-- Onglet Groupes de Navigation -->
-    <div v-if="activeTab === 'navgroups'" class="tab-content">
-      <NavGroupManager />
-    </div>
+      <n-tab-pane name="navgroups" tab="Groupes Navigation">
+        <NavGroupManager />
+      </n-tab-pane>
 
-    <!-- Onglet Pages -->
-    <div v-if="activeTab === 'pages'" class="tab-content">
-      <PageManager />
-    </div>
+      <n-tab-pane name="pages" tab="Pages">
+        <PageManager />
+      </n-tab-pane>
 
-    <!-- Onglet Articles -->
-    <div v-if="activeTab === 'articles'" class="tab-content">
-      <ArticleManager />
-    </div>
-  </div>
+      <n-tab-pane name="articles" tab="Articles">
+        <ArticleManager />
+      </n-tab-pane>
+    </n-tabs>
+  </n-card>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { NCard, NTabs, NTabPane } from 'naive-ui';
 import RoleManager from '../components/Manager/RoleManager.vue';
 import NavGroupManager from '../components/Manager/NavGroupManager.vue';
 import PageManager from '../components/Manager/PageManager.vue';
 import ArticleManager from '../components/Manager/ArticleManager.vue';
 
 const activeTab = ref<string>('roles');
-const tabs = ['roles', 'navgroups', 'pages', 'articles'];
-const tabLabels: Record<string, string> = {
-  roles: '🔐 Rôles',
-  navgroups: '📑 Groupes Navigation',
-  pages: '📄 Pages',
-  articles: '📰 Articles'
-};
 </script>
 
 <style scoped>
 .admin-dashboard {
+  max-width: 100%;
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  background-color: var(--background-2);
+  border-color: var(--background-2);
 }
 
-.nav-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #e0e0e0;
-  flex-wrap: wrap;
-}
 
-.tab-btn {
-  padding: 12px 20px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-light);
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s;
-}
-
-.tab-btn:hover {
-  color: var(--text-white);
-}
-
-.tab-btn.active {
-  color: #007bff;
-  border-bottom-color: #007bff;
-}
-
-.tab-content {
-  animation: fadeIn 0.3s;
-}
-
-@media (max-width: 1200px) {
-  .admin-dashboard {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-dashboard {
-    min-height: auto;
-  }
-
-  .nav-tabs {
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-
-  .tab-btn {
-    padding: 10px 15px;
-    font-size: 14px;
-  }
-}
 </style>

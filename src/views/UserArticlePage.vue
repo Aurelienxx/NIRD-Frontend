@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { articleService } from '../services/articleService';
+import { articleService, type Article } from '../services/articleService';
 import { documentService, type Document } from '../services/documentService';
 import { useAuthStore } from '../services/authService';
 import ArticleFormModal from '../components/Modal/ArticleFormModal.vue';
@@ -81,12 +81,12 @@ import DocumentListView from './DocumentListView.vue';
 
 const authStore = useAuthStore();
 
-const articles = ref([]);
-const documents = ref<Document[]>([]);
+const articles = ref<Article[]>([])
+const documents = ref<Document[]>([])
 const loading = ref(false);
 const isArticleModalOpen = ref(false);
 const isDocumentModalOpen = ref(false);
-const articleToEdit = ref(null);
+const articleToEdit = ref<Article | null>(null);
 const activeTab = ref<'articles' | 'documents'>('articles');
 
 const load = async () => {
@@ -124,20 +124,20 @@ const closeDocumentModal = () => {
   isDocumentModalOpen.value = false;
 };
 
-const edit = (article) => {
-  articleToEdit.value = article;
-  isArticleModalOpen.value = true;
-};
+const edit = (article: Article) => {
+  articleToEdit.value = article
+  isArticleModalOpen.value = true
+}
 
-const remove = async (id) => {
-  await articleService.deleteArticle(id);
-  articles.value = articles.value.filter(a => a.id !== id);
-};
+const remove = async (id: number) => {
+  await articleService.deleteArticle(id)
+  articles.value = articles.value.filter(a => a.id !== id)
+}
 
-const removeDocument = async (id: string) => {
-  await documentService.deleteDocument(id);
-  documents.value = documents.value.filter(d => d.id !== id);
-};
+const removeDocument = async (id: number) => {
+  await documentService.deleteDocument(id)
+  documents.value = documents.value.filter(d => d.id !== id)
+}
 
 const downloadDocument = async (doc: Document) => {
   try {

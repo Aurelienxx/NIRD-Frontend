@@ -18,6 +18,17 @@ export interface Article {
   updatedAt: string;
 }
 
+
+export interface CreateArticleInput {
+  title: string;
+  description: string;
+  content: string | Record<string, any>;
+  mediaUrl?: string;
+  mediaType: 'IMAGE' | 'VIDEO';
+  publishedAt: string;
+  authorId: number;
+}
+
 export const articleService = {
   // Récupérer tous les articles (triés du plus récent au plus ancien)
   async getAllArticles(): Promise<Article[]> {
@@ -50,7 +61,7 @@ export const articleService = {
   },
 
   // Créer un nouvel article
-  async createArticle(article: Omit<Article, 'id' | 'createdAt' | 'updatedAt'>): Promise<Article> {
+  async createArticle(article: CreateArticleInput): Promise<Article> {
     const response = await apiClient.post('/articles', article);
     return response.data;
   },

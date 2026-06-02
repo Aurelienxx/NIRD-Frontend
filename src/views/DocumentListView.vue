@@ -37,7 +37,7 @@ defineProps<{
 defineEmits<{
   openModal: [];
   download: [doc: Document];
-  delete: [id: string];
+  delete: [id: number];
 }>();
 
 const formatDate = (dateString: string): string => {

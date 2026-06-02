@@ -1,72 +1,76 @@
 <template>
   <div class="navgroup-manager">
-    <div class="manager-header">
-      <h2>Gestion des Groupes</h2>
-      <button class="btn btn-primary" @click="showForm = true">+ Nouveau Groupe</button>
-    </div>
+    <n-space justify="space-between" align="center" style="margin-bottom: 24px">
+      <div style="font-size: 16px; font-weight: 600"> Groupes de Navigation</div>
+      <n-button type="primary" @click="showForm = true">+ Nouveau Groupe</n-button>
+    </n-space>
 
-    <!-- Formulaire d'ajout/édition -->
-    <div v-if="showForm" class="form-modal">
-      <div class="form-content">
-        <h3>{{ editingGroup ? 'Modifier' : 'Créer' }} un Groupe</h3>
-        <form @submit.prevent="submitForm">
-          <div class="form-group">
-            <label for="name">Nom du Groupe</label>
-            <input 
-              id="name"
-              v-model="formData.name" 
-              type="text" 
-              placeholder="Ex: Services, Ressources, À propos"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="order">Ordre d'affichage</label>
-            <input 
-              id="order"
-              v-model.number="formData.order" 
-              type="number" 
-              placeholder="0"
-              min="0"
-            />
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-success">{{ editingGroup ? 'Mettre à jour' : 'Créer' }}</button>
-            <button type="button" class="btn btn-secondary" @click="cancelForm">Annuler</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!-- Modal Formulaire d'ajout/édition -->
+    <n-modal
+      v-model:show="showForm"
+      :title="`${editingGroup ? 'Modifier' : 'Créer'} un Groupe`"
+      preset="dialog"
+      positive-text="Confirmer"
+      negative-text="Annuler"
+      @positive-click="submitForm"
+      @negative-click="cancelForm"
+    >
+      <n-form ref="formRef" :model="formData">
+        <n-form-item label="Nom du Groupe" path="name">
+          <n-input 
+            v-model:value="formData.name" 
+            placeholder="Ex: Services, Ressources, À propos"
+            clearable
+          />
+        </n-form-item>
+        <n-form-item label="Ordre d'affichage" path="order">
+          <n-input-number 
+            v-model:value="formData.order" 
+            placeholder="0"
+            :min="0"
+          />
+        </n-form-item>
+      </n-form>
+    </n-modal>
 
     <!-- Liste des groupes -->
-    <div class="navgroups-list">
-      <div v-if="navgroups.length === 0" class="empty-state">
-        <p>Aucun groupe créé. Commencez par en ajouter un!</p>
-      </div>
-      
-      <div v-for="group in navgroups" :key="group.id" class="navgroup-card">
-        <div class="group-info">
-          <h4>{{ group.name }}</h4>
-          <p class="group-pages">{{ group.pages?.length || 0 }} page(s) associée(s)</p>
-        </div>
-        <div class="group-actions">
-          <button class="btn btn-sm btn-warning" @click="editGroup(group)">✏️ Éditer</button>
-          <button class="btn btn-sm btn-danger" @click="deleteGroup(group.id)">🗑️ Supprimer</button>
-        </div>
-      </div>
+    <div v-if="navgroups.length === 0">
+      <n-empty description="Aucun groupe créé" />
     </div>
 
-    <!-- Notifications -->
-    <Transition name="toast">
-      <div v-if="notification" :class="['toast', notification.type]">
-        {{ notification.message }}
-      </div>
-    </Transition>
+    <n-space vertical :size="12" v-else>
+      <n-card v-for="group in navgroups" :key="group.id" :segmented="true">
+        <template #header>
+          <div style="font-weight: 600">{{ group.name }}</div>
+        </template>
+        <template #header-extra>
+          <n-space>
+            <n-button type="warning" quaternary @click="editGroup(group)">
+              ✏️ Éditer
+            </n-button>
+            <n-popconfirm @positive-click="deleteGroup(group.id)">
+              <template #trigger>
+                <n-button type="error" quaternary>🗑️ Supprimer</n-button>
+              </template>
+              Êtes-vous sûr de vouloir supprimer ce groupe? Les pages seront dissociées.
+            </n-popconfirm>
+          </n-space>
+        </template>
+        <n-space>
+          <span style="color: #999">📄 {{ group.pages?.length || 0 }} page(s) associée(s)</span>
+        </n-space>
+      </n-card>
+    </n-space>
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useMessage } from 'naive-ui';
+import { 
+  NButton, NModal, NForm, NFormItem, NInput, NInputNumber, NEmpty, NSpace, NCard, NPopconfirm 
+} from 'naive-ui';
 import { navGroupService } from '../../services/cmsService';
 
 interface NavGroup {
@@ -76,18 +80,18 @@ interface NavGroup {
   pages?: any[];
 }
 
+const message = useMessage();
 const navgroups = ref<NavGroup[]>([]);
 const showForm = ref(false);
 const editingGroup = ref<NavGroup | null>(null);
 const formData = ref({ name: '', order: 0 });
-const notification = ref<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
 const loadNavGroups = async () => {
   try {
     const { data } = await navGroupService.getAllNavGroups();
     navgroups.value = data.sort((a: NavGroup, b: NavGroup) => a.order - b.order);
   } catch (error) {
-    showNotification('Erreur lors du chargement des groupes', 'error');
+    message.error('Erreur lors du chargement des groupes');
   }
 };
 
@@ -101,27 +105,25 @@ const submitForm = async () => {
   try {
     if (editingGroup.value) {
       await navGroupService.updateNavGroup(editingGroup.value.id, formData.value);
-      showNotification('Groupe mis à jour avec succès', 'success');
+      message.success('Groupe mis à jour avec succès');
     } else {
       await navGroupService.createNavGroup(formData.value);
-      showNotification('Groupe créé avec succès', 'success');
+      message.success('Groupe créé avec succès');
     }
     cancelForm();
     loadNavGroups();
   } catch (error) {
-    showNotification('Erreur lors de la sauvegarde', 'error');
+    message.error('Erreur lors de la sauvegarde');
   }
 };
 
 const deleteGroup = async (id: number) => {
-  if (!confirm('Êtes-vous sûr de vouloir supprimer ce groupe? Les pages seront dissociées mais non supprimées.')) return;
-  
   try {
     await navGroupService.deleteNavGroup(id);
-    showNotification('Groupe supprimé avec succès', 'success');
+    message.success('Groupe supprimé avec succès');
     loadNavGroups();
   } catch (error) {
-    showNotification('Erreur lors de la suppression', 'error');
+    message.error('Erreur lors de la suppression');
   }
 };
 
@@ -131,22 +133,13 @@ const cancelForm = () => {
   formData.value = { name: '', order: 0 };
 };
 
-const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-  notification.value = { message, type };
-  setTimeout(() => {
-    notification.value = null;
-  }, 3000);
-};
-
 onMounted(() => {
   loadNavGroups();
 });
 </script>
 
+
 <style scoped>
-.navgroup-manager {
-  padding: 20px;
-}
 
 .navgroup-card {
   background: var(--background-2);
@@ -201,7 +194,7 @@ onMounted(() => {
   border-color: var(--background-3);
 }
 
-.form-group input:focus {
-  border-color: var(--lk-1);
+.navgroup-manager {
+  width: 100%;
 }
 </style>
