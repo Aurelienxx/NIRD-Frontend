@@ -27,6 +27,10 @@
       <n-tab-pane name="articles" tab="Articles">
         <ArticleManager />
       </n-tab-pane>
+
+      <n-tab-pane name="users" tab="Utilisateurs">
+        <UserManager />
+      </n-tab-pane>
     </n-tabs>
   </n-card>
 </template>
@@ -38,7 +42,7 @@ import RoleManager from '../components/Manager/RoleManager.vue';
 import NavGroupManager from '../components/Manager/NavGroupManager.vue';
 import PageManager from '../components/Manager/PageManager.vue';
 import ArticleManager from '../components/Manager/ArticleManager.vue';
-
+import UserManager from '../components/Manager/UserManager.vue';
 const activeTab = ref<string>('roles');
 </script>
 

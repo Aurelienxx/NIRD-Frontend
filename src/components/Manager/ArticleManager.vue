@@ -270,6 +270,11 @@ const formatDate = (date: string): string => {
 </script>
 
 <style scoped>
+
+.article-manager {
+  width: 100%;
+}
+
 .article-layout {
   display: flex;
   height: 100vh;

@@ -1,0 +1,24 @@
+# /apps/blog.silarhi.fr/docker-compose.yml
+services:
+  app:
+    #image: php:8.2-apache
+    container_name: ${NAME}
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    networks:
+        - web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${NAME}.entryPoints=websecure
+      - "traefik.http.services.${NAME}.loadbalancer.server.port=3000"
+      - traefik.http.routers.${NAME}.rule=Host(`${NAME}.jrcan.dev`)
+      - traefik.http.routers.${NAME}.tls=true
+      - traefik.http.routers.${NAME}.tls.certresolver=myresolver
+
+    restart: always
+
+networks:
+  web:
+    external: true
+
