@@ -149,11 +149,6 @@ onMounted(() => {
   align-items: center;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: row;
-}
-
 .email {
   opacity: 0.6;
 }
@@ -171,10 +166,5 @@ onMounted(() => {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 11px;
-}
-
-.separateur {
-  margin: 0 6px;
-  opacity: 0.6;
 }
 </style>

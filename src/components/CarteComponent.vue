@@ -49,7 +49,7 @@
               :key="user.id"
               class="user-card"
             >
-
+            <div class="user-map">
               <div class="user-name">
                 {{ user.name }}
               </div>
@@ -57,6 +57,7 @@
               <div class="user-email">
                 {{ user.email }}
               </div>
+            </div>
 
               <div class="roles">
 
@@ -268,12 +269,19 @@ const selectPlace = (place: Place) => {
 
 .user-name {
   font-weight: bold;
+  align-items: left;
 }
 
 .user-email {
   font-size: 13px;
   margin-top: 4px;
   color: #999;
+}
+
+.user-card{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .roles {
