@@ -277,7 +277,7 @@ const selectPlace = (place: Place) => {
   margin-top: 4px;
   color: #999;
 }
- 
+
 .user-card{
   display: flex;
   flex-direction: column;
