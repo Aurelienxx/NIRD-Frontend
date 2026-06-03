@@ -12,7 +12,7 @@
         <div class="place-header">
 
           <h3 class="place-name">
-            {{ selectedPlace.name }}
+            {{ selectedPlace.name }} 
           </h3>
 
           <span class="place-type">
