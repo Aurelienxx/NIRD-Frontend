@@ -11,9 +11,9 @@
         <div class="email"> {{ user.email }} </div>
         </div>
 
-        <n-button type="primary" @click="openEdit(user)">
+        <button @click="openEdit(user)">
         Modifier rôles
-        </n-button>
+        </button>
     </div>
 
     <div class="roles">
@@ -24,29 +24,21 @@
 
     </n-card>
 
-    <n-modal v-model:show="showModal" preset="dialog">
-        <template #header>
-            Modifier les rôles
-        </template>
-
+      <n-modal
+        v-model:show="showModal"
+        preset="dialog"
+        title="Modifier les rôles"
+        positive-text="Sauvegarder"
+        negative-text="Annuler"
+        @positive-click="saveRoles"
+        @negative-click="cancelEdit"
+      >
         <n-select
-            v-model:value="selectedRoles"
-            :options="roleOptions"
-            multiple
+          v-model:value="selectedRoles"
+          :options="roleOptions"
+          multiple
         />
-
-        <template #action>
-            <n-space>
-            <n-button @click="showModal = false">
-                Annuler
-            </n-button>
-
-            <n-button type="primary" @click="saveRoles">
-                Sauvegarder
-            </n-button>
-            </n-space>
-        </template>
-    </n-modal>
+      </n-modal>
     </div>
 </template>
 
@@ -105,13 +97,19 @@ const openEdit = (user: User) => {
   showModal.value = true
 }
 
+const cancelEdit = () => {
+  showModal.value = false
+  selectedUser.value = null
+  selectedRoles.value = []
+}
+
 const saveRoles = async () => {
   if (!selectedUser.value) return
 
-  /*await userService.update(
-    selectedUser.value.id,
-    selectedRoles.value
-  )*/
+  await userService.update(selectedUser.value.id, {
+    roles: selectedRoles.value.map(id => ({ id }))
+  })
+
 
   message.success('Rôles mis à jour')
 

@@ -20,6 +20,16 @@ export interface User {
   createdAt?: string;
 }
 
+export interface EditUserData {
+  id: number;
+  email: string;
+  name: string;
+  roles: Array<{ id: number;}>;
+  placeId?: number;
+  place?: Place;
+  createdAt?: string;
+}
+
 export interface LoginData {
   email: string;
   password: string;
@@ -72,7 +82,7 @@ export const userService = {
   },
 
   // Mettre à jour un utilisateur
-  async update(id: number, data: Partial<User>): Promise<User> {
+  async update(id: number, data: Partial<EditUserData>): Promise<EditUserData> {
     try {
       const response = await apiClient.put(`/users/${id}`, data);
       return response.data;
