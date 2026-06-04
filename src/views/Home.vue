@@ -15,7 +15,7 @@ const route = useRoute();
 const page = ref<any>(null);
 
 watchEffect(async () => {
-  const slug = (route.params.slug as string) || 'accueil';
+  const slug = (route.params.slug as string) || 'home';
   try {
     const response = await pageService.getPageBySlug(slug);
     
