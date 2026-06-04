@@ -11,9 +11,9 @@
         <div class="email"> {{ user.email }} </div>
         </div>
 
-        <button @click="openEdit(user)">
+        <n-button @click="openEdit(user)">
         Modifier rôles
-        </button>
+        </n-button>
     </div>
 
     <div class="roles">
@@ -164,5 +164,14 @@ onMounted(() => {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 11px;
+}
+
+.n-button {
+  background: var(--background-2);
+  border: none;
+  color: var(--text-white);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>
