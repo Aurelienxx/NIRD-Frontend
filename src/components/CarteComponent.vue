@@ -100,6 +100,19 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { placeService } from '../services/placeService'
 
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+
+// Force Leaflet à utiliser les bonnes icônes en production
+delete (L.Icon.Default.prototype as any)._getIconUrl
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow
+})
+
 const markers: Map<number, L.Marker> = new Map()
 
 interface Place {
@@ -124,10 +137,46 @@ interface Place {
 const places = ref<Place[]>([])
 const selectedPlace = ref<Place | null>(null)
 
-onMounted(async () => {
-  places.value = await placeService.getAllPlaces()
+const selectPlace = (place: Place) => {
+  selectedPlace.value = place
 
-  const map = L.map('map').setView([46.603354, 1.888334], 6)
+  const marker = markers.get(place.id)
+
+  if (marker) {
+    marker.openPopup()
+  }
+}
+
+onMounted(async () => {
+  const cache = localStorage.getItem('places')
+  const cacheDate = localStorage.getItem('places-date')
+
+  const ONE_HOUR = 60 * 60 * 1000
+
+  if (
+    cache &&
+    cacheDate &&
+    Date.now() - Number(cacheDate) < ONE_HOUR
+  ) {
+    places.value = JSON.parse(cache)
+  } else {
+    places.value = await placeService.getAllPlaces()
+
+    localStorage.setItem(
+      'places',
+      JSON.stringify(places.value)
+    )
+
+    localStorage.setItem(
+      'places-date',
+      Date.now().toString()
+    )
+  }
+
+  const map = L.map('map').setView(
+    [46.603354, 1.888334],
+    6
+  )
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -137,7 +186,6 @@ onMounted(async () => {
   ).addTo(map)
 
   for (const place of places.value) {
-
     const marker = L.marker([
       Number(place.latitude),
       Number(place.longitude)
@@ -157,19 +205,11 @@ onMounted(async () => {
       selectPlace(place)
     })
   }
+
+  setTimeout(() => {
+    map.invalidateSize()
+  }, 100)
 })
-
-const selectPlace = (place: Place) => {
-  selectedPlace.value = place
-
-  const marker = markers.get(place.id)
-
-  if (marker) {
-    marker.openPopup()
-  }
-}
-
-
 </script>
 
 <style scoped>
@@ -177,12 +217,13 @@ const selectPlace = (place: Place) => {
   display: flex;
   width: 100%;
   height: 100vh;
-  padding: 10px;
+  padding: 20px;
+  padding-right: 50px;
   border-top: 1px solid #e0e0e0;
 }
 
 .sidebar {
-  width: 350px;
+  width: 450px;
   overflow-y: auto;
   border-right: 1px solid #e0e0e0;
   padding: 20px;
@@ -297,5 +338,75 @@ const selectPlace = (place: Place) => {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 11px;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .map {
+    flex: none;
+    width: 100%;
+    height: 60vh;
+    min-width: 100%;
+  }
+
+  .place-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .place-type {
+    align-self: flex-start;
+  }
+
+  .user-card {
+    padding: 10px;
+  }
+
+  .roles {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    max-height: 45vh;
+    padding: 12px;
+  }
+
+  .sidebar-title {
+    font-size: 1.2rem;
+  }
+
+  .place-name {
+    font-size: 14px;
+  }
+
+  .place-address,
+  .coords,
+  .user-email {
+    font-size: 12px;
+  }
+
+  .role-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .map {
+    height: 55vh;
+  }
 }
 </style>

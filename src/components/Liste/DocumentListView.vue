@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Document } from '../services/documentService';
+import { type Document } from '../../services/documentService';
 
 defineProps<{
   documents: Document[];
@@ -129,5 +129,88 @@ const truncateText = (text: string, maxLength: number): string => {
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .document-card {
+    width: 100%;
+  }
+
+  .document-thumbnail {
+    height: 90px;
+  }
+
+  .file-icon {
+    font-size: 32px;
+  }
+
+  .document-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tags {
+    width: 100%;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+
+  .btn-add {
+    width: 100%;
+    max-width: 320px;
+    margin: 15px auto 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-thumbnail {
+    height: 80px;
+  }
+
+  .file-icon {
+    font-size: 28px;
+  }
+
+  .document-meta {
+    font-size: 11px;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .btn-add.btn-secondary {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
 }
 </style>

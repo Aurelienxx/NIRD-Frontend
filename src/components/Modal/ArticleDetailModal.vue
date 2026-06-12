@@ -173,7 +173,6 @@ function parseContent(content: any) {
 }
 
 .article-title {
-  font-size: 2.5rem;
   margin: 0 0 20px 0;
   line-height: 1.3;
 }
@@ -211,5 +210,103 @@ function parseContent(content: any) {
   font-size: 1.05rem;
   line-height: 1.8;
 }
+@media (max-width: 1024px) {
+  .modal-content {
+    max-width: 95%;
+  }
 
+  .article-body {
+    padding: 30px;
+  }
+
+
+
+  .article-image {
+    height: 300px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .modal-header {
+    padding: 10px;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.7rem;
+  }
+
+  .article-image {
+    height: 220px;
+  }
+
+  .placeholder {
+    font-size: 3rem;
+  }
+
+  .article-body {
+    padding: 20px;
+  }
+
+  .article-title {
+    margin-bottom: 15px;
+  }
+
+  .article-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+  }
+
+  .article-description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .article-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .article-image {
+    height: 180px;
+  }
+
+  .article-body {
+    padding: 15px;
+  }
+
+
+  .author,
+  .date {
+    font-size: 0.85rem;
+  }
+
+  .article-description {
+    font-size: 0.95rem;
+  }
+
+  .article-content {
+    font-size: 0.9rem;
+  }
+}
 </style>

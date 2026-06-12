@@ -6,7 +6,6 @@ export interface Page {
   title: string;
   slug: string;
   description: string;
-  content: string;
   layout: string;      // Le contenu HTML de la page
   location: string;    // ex: "HEADER"
   order: number;

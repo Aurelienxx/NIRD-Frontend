@@ -475,4 +475,180 @@ const truncateText = (text: string, maxLength: number): string => {
     opacity: 1;
   }
 }
+
+/* =========================
+   Tablette
+========================= */
+
+@media (max-width: 1024px) {
+  .page-content {
+    padding: 0 20px;
+  }
+
+  .documents-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .tags-select {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .clear-filters-btn {
+    width: 100%;
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 768px) {
+  .search-header {
+    padding: 20px 15px;
+  }
+
+  .search-form {
+    border-radius: 16px;
+  }
+
+  .search-input {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+
+  .search-button {
+    width: 52px;
+    height: 52px;
+  }
+
+  .search-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .page-content {
+    padding: 0 15px;
+  }
+
+  .filters-section {
+    padding: 15px 0;
+  }
+
+  .documents-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .document-thumbnail {
+    height: 120px;
+  }
+
+  .file-icon {
+    font-size: 40px;
+  }
+
+  .document-info {
+    padding: 14px;
+  }
+
+  .document-meta {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .document-actions {
+    justify-content: center;
+  }
+
+  .action-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .welcome-section p {
+    font-size: 0.95rem;
+  }
+
+  .results-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .empty-state {
+    padding: 50px 15px;
+  }
+
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* =========================
+   Très petits mobiles
+========================= */
+
+@media (max-width: 480px) {
+  .search-header {
+    padding: 15px 10px;
+  }
+
+  .search-input {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .search-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .filters-section {
+    padding: 10px 0;
+  }
+
+  .filter-label {
+    font-size: 13px;
+  }
+
+  .document-info {
+    padding: 12px;
+  }
+
+  .document-title {
+    font-size: 1rem;
+  }
+
+  .document-description {
+    font-size: 0.9rem;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .welcome-section p {
+    font-size: 0.9rem;
+  }
+}
 </style>

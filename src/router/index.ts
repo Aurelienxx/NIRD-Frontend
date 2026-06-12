@@ -7,6 +7,7 @@ import UserArticlePage from '../views/UserArticlePage.vue'
 import Search from '../views/SearchPage.vue'
 import Actualite from '../views/ActuPage.vue'
 import Home from '../views/Home.vue'
+import MentionLegales from '../components/Footer/MentionLegale.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,6 +18,10 @@ const routes: RouteRecordRaw[] = [
     path: '/accueil',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/home',
+    redirect: '/accueil'
   },
   {
     path: '/auth',
@@ -52,6 +57,11 @@ const routes: RouteRecordRaw[] = [
     path: '/user/articles',
     name: 'UserArticlePage',
     component: UserArticlePage
+  },
+  {
+    path: '/mentions-legales',
+    name: 'MentionLegales',
+    component: MentionLegales
   }
 ]
 

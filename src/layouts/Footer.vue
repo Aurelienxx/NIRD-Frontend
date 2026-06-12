@@ -38,9 +38,7 @@
       <div class="footer-bottom">
         <p>&copy; 2026 NIRD Community. Tous droits réservés.</p>
         <div class="footer-bottom-links">
-          <a href="#" class="footer-link-small">Politique de confidentialité</a>
-          <a href="#" class="footer-link-small">Conditions d'utilisation</a>
-          <a href="#" class="footer-link-small">Mentions légales</a>
+          <router-link to="/mentions-legales" class="footer-link-small"> Mentions légales</router-link>
         </div>
       </div>
     </div>
@@ -57,7 +55,9 @@
 }
 
 .footer-content {
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
   padding: 3rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -89,7 +89,7 @@
   flex-direction: row;
   gap: 1.5rem;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .social-link {
@@ -97,6 +97,9 @@
   color: var(--lk-2);
   text-decoration: none;
   transition: opacity 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .social-link:hover {
@@ -107,7 +110,6 @@
 .social-icon {
   width: 25px;
   height: 25px;
-  margin-right: 0.5rem;
 }
 
 .footer-bottom {
@@ -143,10 +145,30 @@
   opacity: 1;
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 2rem;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .footer {
+    padding: 2rem 0 0;
+  }
+
+  .footer-content {
+    padding: 2rem 0;
   }
 
   .footer-bottom {
@@ -156,10 +178,29 @@
 
   .footer-bottom-links {
     justify-content: center;
+    gap: 1rem;
   }
 
   .social-links {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .social-link {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .footer-content {
+    padding: 1.5rem 0;
+  }
+
+  .footer-bottom-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 </style>

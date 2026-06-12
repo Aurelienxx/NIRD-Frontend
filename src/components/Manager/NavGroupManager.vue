@@ -197,4 +197,69 @@ onMounted(() => {
 .navgroup-manager {
   width: 100%;
 }
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+  :deep(.n-card-header) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  :deep(.n-card-header__main) {
+    width: 100%;
+    text-align: center;
+  }
+
+  :deep(.n-card-header__extra) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :deep(.n-card-header__extra) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :deep(.n-card-header__extra .n-space) {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  :deep(.n-card-header__extra .n-space-item) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :deep(.n-card-header__extra .n-space-item > * ) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :deep(.n-card-header__extra .n-button) {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  .navgroup-manager {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  :deep(.n-card-header__extra .n-button) {
+    max-width: 100%;
+  }
+}
 </style>

@@ -76,8 +76,8 @@ import { documentService, type Document } from '../services/documentService';
 import { useAuthStore } from '../services/authService';
 import ArticleFormModal from '../components/Modal/ArticleFormModal.vue';
 import DocumentFormModal from '../components/Modal/DocumentFormModal.vue';
-import ArticleListView from './ArticleListView.vue';
-import DocumentListView from './DocumentListView.vue';
+import ArticleListView from '../components/Liste/ArticleListView.vue';
+import DocumentListView from '../components/Liste/DocumentListView.vue';
 
 const authStore = useAuthStore();
 
@@ -264,5 +264,88 @@ onMounted(load);
   padding: 40px 20px;
   font-size: 18px;
   color: #5f6368;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+  .articles-container {
+    padding: 20px 15px;
+  }
+
+  .wrapper {
+    width: 100%;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 25px;
+    gap: 15px;
+  }
+
+  .header h2 {
+    text-align: center;
+    margin: 0;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .btn-add {
+    width: 100%;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    gap: 0;
+    padding-bottom: 2px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    white-space: nowrap;
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+
+  .loading-state {
+    font-size: 16px;
+    padding: 30px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .articles-container {
+    padding: 15px 10px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn-add {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .tab-btn {
+    min-width: 120px;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .loading-state {
+    font-size: 14px;
+  }
 }
 </style>

@@ -513,4 +513,109 @@ const handleLogout = () => {
   font-weight: 500;
   color: white;
 }
+
+/* =========================
+   RESPONSIVE TABLETTE
+========================= */
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .profile-card {
+    padding: 1.5rem;
+  }
+
+  .profile-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-card h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .info-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .info-group label {
+    min-width: auto;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .btn,
+  .btn-small {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =========================
+   RESPONSIVE MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 0.75rem;
+  }
+
+  .profile-card {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .profile-card h1 {
+    font-size: 1.3rem;
+  }
+
+  .info-group {
+    padding: 0.75rem 0;
+  }
+
+  .roles-list {
+    width: 100%;
+  }
+
+  .role-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-input {
+    font-size: 16px;
+  }
+
+  .form-info {
+    padding: 0.75rem;
+  }
+
+  .error-message {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .not-authenticated {
+    padding: 1.5rem 1rem;
+  }
+
+  .not-authenticated p {
+    font-size: 1rem;
+  }
+}
 </style>

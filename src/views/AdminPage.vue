@@ -10,7 +10,7 @@
       v-model:value="activeTab" 
       type="card" 
       animated 
-      tab-style="min-width: 150px"
+      :tab-style="{ minWidth: 'fit-content' }"
     >
       <n-tab-pane name="roles" tab="Rôles">
         <RoleManager />
@@ -28,6 +28,10 @@
         <ArticleManager />
       </n-tab-pane>
 
+      <n-tab-pane name="documents" tab="Documents">
+        <DocumentManager />
+      </n-tab-pane>
+
       <n-tab-pane name="users" tab="Utilisateurs">
         <UserManager />
       </n-tab-pane>
@@ -42,6 +46,7 @@ import RoleManager from '../components/Manager/RoleManager.vue';
 import NavGroupManager from '../components/Manager/NavGroupManager.vue';
 import PageManager from '../components/Manager/PageManager.vue';
 import ArticleManager from '../components/Manager/ArticleManager.vue';
+import DocumentManager from '../components/Manager/DocumentManager.vue';
 import UserManager from '../components/Manager/UserManager.vue';
 const activeTab = ref<string>('roles');
 </script>
@@ -53,6 +58,48 @@ const activeTab = ref<string>('roles');
   background-color: var(--background-2);
   border-color: var(--background-2);
 }
+@media (max-width: 1024px) {
+  .admin-dashboard {
+    padding: 15px;
+  }
+}
 
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 10px;
+    border-radius: 0;
+  }
+
+  :deep(.n-card-header) h1 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  :deep(.n-tabs-nav-scroll-content) {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  :deep(.n-tabs-tab) {
+    min-width: max-content !important;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard {
+    padding: 8px;
+  }
+
+  :deep(.n-card-header) h1 {
+    font-size: 1.2rem;
+  }
+
+  :deep(.n-tabs-tab) {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
 
 </style>

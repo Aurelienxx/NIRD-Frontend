@@ -165,4 +165,56 @@ onMounted(() => {
   gap: 10px;
   margin-top: 32px;
 }
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1200px) {
+  .roles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .roles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .role-card {
+    height: auto;
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .roles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-actions {
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .role-title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-manager {
+    overflow-x: hidden;
+  }
+
+  .role-title {
+    font-size: 14px;
+    word-break: break-word;
+  }
+
+  .role-card {
+    min-height: 120px;
+  }
+}
 </style>

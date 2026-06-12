@@ -121,6 +121,7 @@ function closeDetailModal() {
 onMounted(() => {
   loadArticles()
 })
+
 </script>
 
 <style scoped>
@@ -263,5 +264,87 @@ onMounted(() => {
 
 .map {
   flex: 1;
+}
+
+/* Tablettes */
+@media (max-width: 1024px) {
+  .actu-page {
+    padding: 30px 15px;
+  }
+
+  .articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .article-image {
+    height: 180px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 768px) {
+  .actu-page {
+    padding: 20px 12px;
+  }
+
+  .actu-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .actu-header h1 {
+    text-align: center;
+    margin: 0;
+  }
+
+  .btn-add-article {
+    width: 100%;
+  }
+
+  .articles-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .article-image {
+    height: 220px;
+  }
+
+  .article-content {
+    padding: 16px;
+  }
+
+  .article-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+/* Très petits écrans */
+@media (max-width: 480px) {
+  .actu-page {
+    padding: 15px 10px;
+  }
+
+  .article-image {
+    height: 180px;
+  }
+
+  .article-content {
+    padding: 14px;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .btn-add-article {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 </style>

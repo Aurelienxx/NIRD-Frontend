@@ -1,6 +1,63 @@
 <template>
   <header class="header">
     <div class="container header-content">
+      <button
+        class="mobile-menu-btn"
+        @click="mobileMenuOpen = !mobileMenuOpen"
+      >
+        ☰
+      </button>
+
+      <div
+        v-if="mobileMenuOpen"
+        class="mobile-nav"
+      >
+        <router-link
+          v-for="page in standalonePages"
+          :key="page.id"
+          :to="'/' + page.slug"
+          class="mobile-nav-link"
+          @click="mobileMenuOpen = false"
+        >
+          {{ page.title }}
+        </router-link>
+
+        <template
+          v-for="(items, groupName) in groupedPages"
+          :key="groupName"
+        >
+          <div class="mobile-group-title">
+            {{ groupName }}
+          </div>
+
+          <router-link
+            v-for="page in items"
+            :key="page.id"
+            :to="'/' + page.slug"
+            class="mobile-nav-link mobile-sub-link"
+            @click="mobileMenuOpen = false"
+          >
+            {{ page.title }}
+          </router-link>
+        </template>
+
+        <router-link
+          to="/actualites"
+          class="mobile-nav-link"
+          @click="mobileMenuOpen = false"
+        >
+          Actualités
+        </router-link>
+
+        <router-link
+          to="/recherche"
+          class="mobile-nav-link"
+          @click="mobileMenuOpen = false"
+        >
+          Recherche
+        </router-link>
+      </div>
+
       <div class="logo">
         <router-link to="/" class="logo-link">
           <img src="/img/logo/logo.png" alt="NIRD Logo" class="logo-icon" />
@@ -132,6 +189,8 @@ const authStore = useAuthStore();
 
 const pagesList = ref<any[]>([]);
 const showProfileMenu = ref(false);
+
+const mobileMenuOpen = ref(false)
 
 // Vérifier si l'utilisateur est admin
 const isAdmin = computed(() => {
@@ -398,27 +457,6 @@ const groupedPages = computed(() => {
   background-color: rgba(255, 107, 107, 0.15);
 }
 
-@media (max-width: 768px) {
-  .header-content {
-    gap: 1rem;
-  }
-
-  .nav {
-    gap: 0.5rem;
-  }
-
-  .nav-link {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.85rem;
-  }
-
-  .logo-icon {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-
 .logo-icon {
   height: 2.5rem;
   display: block;
@@ -470,13 +508,102 @@ const groupedPages = computed(() => {
   height: 20px;
 }
 
+/* Tablettes */
 @media (max-width: 1024px) {
-  .nav {
-    gap: 0.5rem;
+  .header-content {
+    flex-wrap: wrap;
+    gap: 1rem;
   }
-  .nav-link {
-    padding: 0.5rem;
-    font-size: 0.85rem;
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+}
+
+/* Mobiles */
+.mobile-menu-btn,
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    position: relative;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+
+  .header-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+
+    background: var(--background-1);
+
+    max-height: calc(100vh - 72px);
+    overflow-y: auto;
+
+    box-shadow: var(--shadow-lg);
+    z-index: 999;
+  }
+
+  .mobile-nav-link {
+    padding: 1rem;
+
+    color: var(--text-white);
+    text-decoration: none;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .mobile-group-title {
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--lk-2);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .mobile-sub-link {
+    padding-left: 2rem;
+  }
+
+  .header-actions {
+    margin-left: auto;
   }
 }
 </style>

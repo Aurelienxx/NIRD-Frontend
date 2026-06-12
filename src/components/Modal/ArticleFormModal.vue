@@ -323,4 +323,81 @@ button {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Tablettes */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 15px;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  form {
+    gap: 16px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: none;
+    max-height: 100vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-header {
+    padding: 14px 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+  }
+
+  button {
+    min-height: 44px;
+  }
+
+  .close-btn {
+    font-size: 1.6rem;
+  }
+}
 </style>

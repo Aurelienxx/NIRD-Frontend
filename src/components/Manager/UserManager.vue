@@ -1,6 +1,8 @@
 <template>
   <div class="usergroup-manager">
-    <div style="font-size: 16px; font-weight: 600"> Liste des utilisateurs </div>
+    <n-space justify="space-between" align="center" style="margin-bottom: 24px">
+      <div style="font-size: 16px; font-weight: 600"> Liste des Utilisateurs</div>
+    </n-space>
 
     <n-card v-for="user in users" :key="user.id" class="user-card" :bordered="false" :segmented="false">
 
@@ -173,5 +175,39 @@ onMounted(() => {
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .user-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .email {
+    display: block;
+    margin-top: 4px;
+  }
+
+  .user-header .n-button {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  .roles {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-header .n-button {
+    max-width: 100%;
+  }
 }
 </style>

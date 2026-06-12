@@ -1,7 +1,7 @@
 <template>
   <div class="page-manager">
     <n-space justify="space-between" align="center" style="margin-bottom: 24px">
-      <div style="font-size: 16px; font-weight: 600"> Liste des pages</div>
+      <div style="font-size: 16px; font-weight: 600"> Liste des Pages</div>
       <n-button type="primary" @click="createNewPage">+ Nouvelle Page</n-button>
     </n-space>
     <div class="page-layout">
