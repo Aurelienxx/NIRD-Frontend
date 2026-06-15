@@ -207,7 +207,8 @@ const saveProfile = async () => {
     const updatedUser = await userService.update(authStore.user.id, updateData);
 
     // Mettre à jour le store
-    authStore.user = updatedUser;
+    authStore.user = updateData;
+    localStorage.setItem('authUser', JSON.stringify(updatedUser));
 
     isEditing.value = false;
     isSaving.value = false;

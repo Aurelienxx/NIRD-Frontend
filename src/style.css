@@ -1100,3 +1100,12 @@ label{
   font-size: 1.2rem;
   font-weight: 600;
 }
+
+.n-input{
+  background-color: var(--background-1);
+}
+
+.n-input .n-input--medium-size .n-input--resizable .n-input--stateful{
+  background-color: var(--background-1);
+  color: var(--text-light);
+}

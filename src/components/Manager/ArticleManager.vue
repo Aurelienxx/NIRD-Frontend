@@ -2,6 +2,11 @@
   <div class="article-manager">
     <n-space justify="space-between" align="center" style="margin-bottom: 24px">
       <div style="font-size: 16px; font-weight: 600"> Liste des Articles</div>
+      <n-input
+  v-model:value="search"
+  placeholder="Rechercher un article"
+  @input="onSearch"
+/>
     </n-space>
     <div class="article-layout">
 
@@ -107,12 +112,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useMessage } from 'naive-ui';
 import { NButton, NCard, NForm, NInput, NEmpty, NSpace, NPopconfirm } from 'naive-ui';
 import { articleService, type Article } from '../../services/articleService';
 import { userService } from '../../services/userService';
 import RichTextEditor from '../Admin/RichTextEditor.vue';
+
+const search = ref('')
+let searchTimeout: any = null
 
 type MediaType = 'IMAGE';
 
@@ -146,6 +154,23 @@ onMounted(() => {
   loadArticles();
   loadAuthors();
 });
+
+const onSearch = () => {
+  clearTimeout(searchTimeout)
+
+  searchTimeout = setTimeout(async () => {
+    if (search.value.trim() === '') {
+      await loadArticles()
+      return
+    }
+
+    try {
+      articles.value = await articleService.searchArticles(search.value)
+    } catch {
+      message.error('Erreur lors de la recherche')
+    }
+  }, 300)
+}
 
 const loadArticles = async () => {
   try {

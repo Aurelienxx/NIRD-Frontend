@@ -2,9 +2,13 @@
   <div class="usergroup-manager">
     <n-space justify="space-between" align="center" style="margin-bottom: 24px">
       <div style="font-size: 16px; font-weight: 600"> Liste des Utilisateurs</div>
+      <n-input
+      v-model:value="search"
+      placeholder="Rechercher un utilisateur"
+    />
     </n-space>
-
-    <n-card v-for="user in users" :key="user.id" class="user-card" :bordered="false" :segmented="false">
+    
+    <n-card v-for="user in filteredUsers" :key="user.id" class="user-card" :bordered="false" :segmented="false">
 
     <div class="user-header">
         <div class="user-info">
@@ -45,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useMessage } from 'naive-ui'
 import { userService } from '../../services/userService'
 import { roleService } from '../../services/roleService'
@@ -70,6 +74,7 @@ const roles = ref<Role[]>([])
 const showModal = ref(false)
 const selectedUser = ref<User | null>(null)
 const selectedRoles = ref<number[]>([])
+const search = ref('')
 
 const roleOptions = ref<{ label: string; value: number }[]>([])
 
@@ -121,6 +126,12 @@ const saveRoles = async () => {
 
   await loadUsers()
 }
+
+const filteredUsers = computed(() => {
+  return users.value.filter(u => {
+    return u.name.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
 
 onMounted(() => {
   loadUsers()

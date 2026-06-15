@@ -2,6 +2,11 @@
   <div class="doc-manager">
     <n-space justify="space-between" align="center" style="margin-bottom: 24px">
       <div style="font-size: 16px; font-weight: 600"> Liste des Documents</div>
+      <n-input
+        v-model:value="search"
+        placeholder="Rechercher un document"
+        @input="searchDocuments"
+      />
     </n-space>
 
     <!-- Modal Formulaire d'ajout/édition -->
@@ -141,6 +146,8 @@ const documents = ref<Document[]>([]);
 const showForm = ref(false);
 const editingDocument = ref<Document | null>(null);
 
+const search = ref('')
+
 const formData = ref<{
   title: string;
   description: string;
@@ -260,6 +267,21 @@ const cancelForm = () => {
     file: null
   };
 };
+
+
+const searchDocuments = async () => {
+  if (search.value.trim() === '') {
+    await loadDocuments()
+    return
+  }
+
+  try {
+    documents.value = await documentService.searchDocuments(search.value)
+  } catch {
+    message.error('Erreur lors de la recherche')
+  }
+}
+
 
 onMounted(() => {
   loadDocuments();
