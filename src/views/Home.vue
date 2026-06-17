@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <div class="page-body" v-html="page.layout"></div>
+    <div v-if="page" class="page-body" v-html="page.layout"></div>
+    
+    <div v-else class="loading">
+      Chargement de la page...
+    </div>
   </div>
   <CarteVue />
 </template>
