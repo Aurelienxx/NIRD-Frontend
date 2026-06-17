@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useMessage } from 'naive-ui';
 import { NButton, NCard, NForm, NInput, NEmpty, NSpace, NPopconfirm } from 'naive-ui';
 import { articleService, type Article } from '../../services/articleService';
