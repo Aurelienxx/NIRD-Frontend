@@ -8,7 +8,7 @@ export interface Document {
   description: string;
   fileName: string;
   fileType: string;
-  fileData: Uint8Array | string;
+  fileData?: Uint8Array | string;
   author: {
     id: number;
     name: string;
